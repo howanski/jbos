@@ -1,0 +1,6 @@
+#!/bin/bash
+clear
+printf "\n\n  Removing images not used in any -> RUNNING <- containers... \n\n"
+docker image prune
+printf "\n\n  Removing volumes not used in any -> RUNNING <- containers... \n\n"
+docker volume prune
