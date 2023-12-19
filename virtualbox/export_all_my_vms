@@ -14,24 +14,23 @@ if [ -d $myexport ]; then
       mach=`echo $m | sed 's/ {.*//;s/"//g'`
       rundate=$(vboxmanage showvminfo "$mach" | grep State | awk '{print $5, substr($(NF-1),1,9)}' | cut -c 1-19)
       rundate=$(date -d $rundate "+%s")
-      echo "confirmed last run date: $rundate"
       moddate=0
       if [ -f "$myexport/$mach.ova" ]; then
         moddate=$(date -r "$myexport/$mach.ova" "+%s")
       fi
-      echo "Known modification date: $moddate"
       if [ -z $moddate ]; then
         moddate=0
       fi
       if [ $rundate -ge $moddate ]; then
-        echo "Previous or none backup found";
         echo "Removing old backup of $mach ..."
         rm -f "$myexport/$mach.ova" 2> /dev/null
         echo "Exporting: $mach ..."
         vboxmanage export "$mach" --ovf20 --options=manifest,nomacsbutnat -o "$myexport/$mach.ova"
       else
-        echo "Export of $mach aborted - backup newer than last machine run"
+        echo "Export of $mach aborted - backup newer than last machine run -rejecting"
       fi
       echo "----"
   done
+else
+  echo "Export path $myexport not found, please check the script"
 fi
