@@ -1,0 +1,37 @@
+#!/bin/bash
+myexport="~/MOUNTS/BIG_DATA_POOL/"
+# where to export the VMs to, I use a mounted network drive that is part of ZFS pool
+# but I'm not against ceph or glued-up bunch of USB drives
+# or even a local drive, but I'd rather not
+# just get them mounted and set the path up here
+
+echo "Starting virtualbox exports..."
+if [ -d $myexport ]; then
+  IFS=$'\n'
+  for m in $(vboxmanage list vms); do
+      echo ""
+      echo ""
+      mach=`echo $m | sed 's/ {.*//;s/"//g'`
+      rundate=$(vboxmanage showvminfo "$mach" | grep State | awk '{print $5, substr($(NF-1),1,9)}' | cut -c 1-19)
+      rundate=$(date -d $rundate "+%s")
+      echo "confirmed last run date: $rundate"
+      moddate=0
+      if [ -f "$myexport/$mach.ova" ]; then
+        moddate=$(date -r "$myexport/$mach.ova" "+%s")
+      fi
+      echo "Known modification date: $moddate"
+      if [ -z $moddate ]; then
+        moddate=0
+      fi
+      if [ $rundate -ge $moddate ]; then
+        echo "Previous backup found";
+        echo "Removing old backup of $mach ..."
+        rm -f "$myexport/$mach.ova" 2> /dev/null
+        echo "Exporting: $mach ..."
+        vboxmanage export "$mach" --ovf20 --options=manifest,nomacsbutnat -o "$myexport/$mach.ova"
+      else
+        echo "Export of $mach aborted - backup newer than last machine run"
+      fi
+      echo "----"
+  done
+fi
