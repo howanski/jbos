@@ -24,7 +24,7 @@ if [ -d $myexport ]; then
         moddate=0
       fi
       if [ $rundate -ge $moddate ]; then
-        echo "Previous backup found";
+        echo "Previous or none backup found";
         echo "Removing old backup of $mach ..."
         rm -f "$myexport/$mach.ova" 2> /dev/null
         echo "Exporting: $mach ..."
