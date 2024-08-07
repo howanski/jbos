@@ -1,0 +1,12 @@
+#!/bin/bash
+
+for i in *;
+    do
+        if [ -d "$i" ]; then
+            cd "$i"
+            list_bitrates
+            cd ..
+        else
+            get_bitrate "$i"
+        fi
+    done

@@ -1,0 +1,17 @@
+#!/bin/bash
+
+filename=$1
+
+longOutput="$filename $(ffmpeg -i "$filename"  2>&1 | grep bitrate)"
+
+wrongFileCheck=$(echo "$longOutput" | grep "N/A")
+
+if [[ $wrongFileCheck != '' ]] ; then
+    exit 0;
+fi
+
+spacesCount=$(echo $longOutput | tr -cd ' \t' | wc -c)
+
+kbps=$(echo ${longOutput} | cut -d ' ' -f $spacesCount)
+
+echo "$kbps $longOutput"
