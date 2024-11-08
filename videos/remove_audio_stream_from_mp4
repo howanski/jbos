@@ -1,0 +1,31 @@
+#!/bin/bash
+clear
+
+filename=$1
+counter=0
+subOption=""
+
+longOutput="$(ffmpeg -i "$filename"  2>&1 | grep Audio | grep Stream)"
+
+echo "Audio streams, firtst is 0, second is 1 and so on:"
+echo ""
+echo "$longOutput"
+echo ""
+#echo "$longOutput" | wc -l
+
+
+read -p "Select stream to be removed: " trackNumber
+
+read -r -p "Remove subtitle streams? [y/N]" -n 1
+
+echo # (optional) move to a new line
+
+case "$REPLY" in
+
+  y|Y ) subOption="-sn";;
+
+  * ) echo "";;
+
+esac
+
+ffmpeg -i $filename -map 0 -map -0:a:$trackNumber -c copy $subOption -y cut_$filename

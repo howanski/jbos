@@ -4,6 +4,8 @@ filename=$1
 
 longOutput="$filename $(ffmpeg -i "$filename"  2>&1 | grep bitrate)"
 
+audios="$(ffmpeg -i "$filename"  2>&1 | grep Audio | grep Stream | wc -l)"
+
 wrongFileCheck=$(echo "$longOutput" | grep "N/A")
 
 if [[ $wrongFileCheck != '' ]] ; then
@@ -14,4 +16,4 @@ spacesCount=$(echo $longOutput | tr -cd ' \t' | wc -c)
 
 kbps=$(echo ${longOutput} | cut -d ' ' -f $spacesCount)
 
-echo "$kbps $longOutput"
+echo "$kbps $longOutput (Audio streams: $audios)"

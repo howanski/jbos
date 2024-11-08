@@ -1,0 +1,6 @@
+#!/bin/bash
+clear
+
+filename=$1
+
+ffmpeg -i $filename -map 0 -c copy -sn cut_$filename
