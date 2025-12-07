@@ -2,9 +2,13 @@
 clear
 printf "...\n"
 docker system df
+printf "\n\n  Removing stopped containers... \n\n"
+docker container prune
 printf "\n\n  Removing images not used in any -> RUNNING <- containers... \n\n"
 docker image prune
 printf "\n\n  Removing volumes not used in any -> RUNNING <- containers... \n\n"
 docker volume prune
+printf "\n\n  Removing build cache... \n\n"
+docker buildx prune
 printf "\n"
 docker system df

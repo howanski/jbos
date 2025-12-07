@@ -1,6 +1,8 @@
 #!/bin/bash
 clear
 docker system df
+docker container prune --force
 docker image prune --force
 docker volume prune --force
+docker buildx prune --force
 docker system df
